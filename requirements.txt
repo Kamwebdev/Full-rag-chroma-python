@@ -1,0 +1,13 @@
+openai
+langchain
+faiss-cpu
+chromadb      
+openai 
+tiktoken
+python-dotenv
+sentence-transformers
+requests
+bs4
+rich
+gradio
+ruff

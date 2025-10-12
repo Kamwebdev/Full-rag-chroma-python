@@ -1,0 +1,7 @@
+.idea
+.gradio
+__pychache__
+test
+chroma*
+*.pyc
+.env
