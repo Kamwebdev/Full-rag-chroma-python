@@ -1,4 +1,5 @@
-# Full Chroma-RAG with OpenAI & Local Embedding Providers
+# Full Chroma-RAG with OpenAI or Local Providers
+(Embedings and Multi-LLM Requests)
 
 This project integrates a Retrieval-Augmented Generation (RAG) model with Chroma, a vector database, to perform efficient and scalable search and generation tasks. You can run the system with either OpenAI's embeddings or a local embedding provider to process and retrieve relevant information from your data.
 
