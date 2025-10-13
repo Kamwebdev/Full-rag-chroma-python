@@ -1,5 +1,4 @@
-# Full Chroma-RAG with OpenAI & Local Providers (Ollama)
-(Embedings and Multi-LLM Requests)
+# Chroma-RAG with OpenAI & Local Providers (Ollama)
 
 This project integrates a Retrieval-Augmented Generation (RAG) model with Chroma, a vector database, to perform efficient and scalable search and generation tasks. You can run the system with either OpenAI's embeddings or a local embedding provider to process and retrieve relevant information from your data.
 
@@ -9,6 +8,20 @@ Key Features:
 - Local vs. OpenAI Providers: Choose between local providers (e.g., Ollama) or OpenAI's API for different use cases and performance needs.
 - Interactive GUI: Launch a user-friendly interface with Gradio to interact with the system easily.
 
+
+## Tutorial  [PL] 
+
+All code and content are authored by me.
+
+Stay tuned for the upcoming parts of my [RAG tutorial series](https://blog.kamdev.pl).
+
+### Available Parts
+
+- **Part 1:** [Import danych do bazy wektorowej](https://blog.kamdev.pl/post/budujemy-wlasny-rag-cz-1-import-danych-do-bazy-wektorowej/)
+
+- **Part 2:** [Przeszukiwanie bazy wektorowej](https://blog.kamdev.pl/post/budujemy-wlasny-rag-cz-2-przeszukiwanie-bazy-wektorowej/)
+
+- **Part 3:** [Tworzymy gui do naszego chat-a + >bonus< scrapowanie stron www](https://blog.kamdev.pl/post/budujemy-wlasny-rag-cz-3-dodajemy-gui-oraz-scrapowanie-stron-www/)
 
 ## Install
 ```
