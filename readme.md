@@ -21,7 +21,9 @@ Stay tuned for the upcoming parts of my [RAG tutorial series](https://blog.kamde
 
 - **Part 2:** [Przeszukiwanie bazy wektorowej](https://blog.kamdev.pl/post/budujemy-wlasny-rag-cz-2-przeszukiwanie-bazy-wektorowej/)
 
-- **Part 3:** [Tworzymy gui do naszego chat-a + >bonus< scrapowanie stron www](https://blog.kamdev.pl/post/budujemy-wlasny-rag-cz-3-dodajemy-gui-oraz-scrapowanie-stron-www/)
+- **Part 3:** [Tworzymy gui dla naszego chat-a](https://blog.kamdev.pl/post/budujemy-wlasny-rag-cz-3-dodajemy-gui/)
+
+- **Part 4:** [Dodajemy scrapowanie stron www](https://blog.kamdev.pl/post/budujemy-wlasny-rag-cz-4-scrapowanie-stron-www/)
 
 ## Install
 ```
