@@ -1,51 +1,83 @@
 import gradio as gr
 from chromadb import PersistentClient
-from lib.embedding import Embedder
-from lib.rag_query import LLMSearch
-from lib.config_parser import RAGConfig
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-import json
 
-from rich.console import Console
+from lib.embeding import embeder_loader
+from lib.parser import parse_args
+from lib.search import search
 
-console = Console()
-config = RAGConfig().get()
-embed_fn = Embedder(config.embedder_provider, config.embedder_model).initialize
-collection = PersistentClient(path=config.db_location).get_or_create_collection(
-    "documents"
-)
+from typing import List, Tuple, Optional, Literal
 
 
-def chat_fn(message, history):
-    results = collection.query(
-        query_embeddings=embed_fn([message]),
-        n_results=config.n_results if hasattr(config, "n_results") else 3,
-    )
+def chat_fn(
+    message: str,
+    history: Optional[List[Tuple[str, str]]],
+    search_provider: Literal["openai", "local"],
+    n_results: int
+) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]]]:
+    """
+    Handles a single chat interaction.
 
-    rag = LLMSearch(
-        provider=config.search_provider, model=config.search_model, verbose=True
-    )
-    answer = rag.search_with_context(message, results)
+    Args:
+        message (str): The user's message.
+        history (Optional[List[Tuple[str, str]]]): Conversation history as list of (user, assistant) message pairs.
+        search_provider (Literal["openai", "local"]): The search backend to use.
+        n_results (int): Number of top documents to retrieve from ChromaDB.
 
+    Returns:
+        Tuple[List[Tuple[str, str]], List[Tuple[str, str]]]:
+            - First element: messages to display in the chat UI (usually full or truncated history).
+            - Second element: updated history to store in state.
+    """
     history = history or []
+
+    results = collection.query(
+        query_embeddings=embed_fn([message]), n_results=int(n_results)
+    )
+
+    if search_provider == "openai":
+        search_model = "gpt-4o-mini"
+    else:
+        search_model = "llama3.1:8b"
+
+    if history:
+        previous_messages = "\n".join(
+            [f"    User: {q.strip()}\n    Assistant: {a.strip()}" for q, a in history[-2:]]
+        )
+        full_message = f"{message}\n\n    History:\n{previous_messages}"
+    else:
+        full_message = f"User: {message}"
+
+    answer = search(full_message, results, search_provider, search_model, args.verbose)
     history.append((message, answer))
 
-    if config.verbose:
-        table = Table(show_header=True, header_style="bold magenta")
-        table.add_column("Question", style="dim", width=40)
-        table.add_column("Answer", width=80)
-
-        for question, answer in history:
-            table.add_row(message, answer)
-
-        console.print(table)
-        console.print(Panel(answer, title="Conversation"))
-
-    return answer
+    return history, history
 
 
-with gr.ChatInterface(chat_fn, title="Chat RAG + LLM") as demo:
-    print(config)
-    demo.launch(share=False)
+with gr.Blocks() as my_rag:
+    gr.Markdown("## Chat RAG + LLM")
+    chatbot = gr.Chatbot(label="KamDev.pl")
+    msg = gr.Textbox(label="Enter message", placeholder="Ask question...")
+    send_btn = gr.Button("Send")
+    state = gr.State([])
+
+    with gr.Row():
+        search_provider = gr.Dropdown(
+            choices=["openai", "local"], value="local", label="Search Provider"
+        )
+        n_results = gr.Slider(
+            minimum=1, maximum=10, step=1, value=3, label="Set a limit on documents returned by ChromaDB."
+        )
+
+    send_btn.click(
+        fn=chat_fn,
+        inputs=[msg, state, search_provider, n_results],
+        outputs=[chatbot, state],
+    )
+
+if __name__ == "__main__":
+    args = parse_args()
+    collection = PersistentClient(path=args.db_location).get_or_create_collection(
+        "documents"
+    )
+    embed_fn = embeder_loader(args)
+    my_rag.launch()
