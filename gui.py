@@ -1,3 +1,5 @@
+from typing import List, Literal, Optional, Tuple
+
 import gradio as gr
 from chromadb import PersistentClient
 
@@ -5,14 +7,12 @@ from lib.embeding import embeder_loader
 from lib.parser import parse_args
 from lib.search import search
 
-from typing import List, Tuple, Optional, Literal
-
 
 def chat_fn(
     message: str,
     history: Optional[List[Tuple[str, str]]],
     search_provider: Literal["openai", "local"],
-    n_results: int
+    n_results: int,
 ) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]]]:
     """
     Handles a single chat interaction.
@@ -41,7 +41,10 @@ def chat_fn(
 
     if history:
         previous_messages = "\n".join(
-            [f"    User: {q.strip()}\n    Assistant: {a.strip()}" for q, a in history[-2:]]
+            [
+                f"    User: {q.strip()}\n    Assistant: {a.strip()}"
+                for q, a in history[-2:]
+            ]
         )
         full_message = f"{message}\n\n    History:\n{previous_messages}"
     else:
@@ -65,7 +68,11 @@ with gr.Blocks() as my_rag:
             choices=["openai", "local"], value="local", label="Search Provider"
         )
         n_results = gr.Slider(
-            minimum=1, maximum=10, step=1, value=3, label="Set a limit on documents returned by ChromaDB."
+            minimum=1,
+            maximum=10,
+            step=1,
+            value=3,
+            label="Set a limit on documents returned by ChromaDB.",
         )
 
     send_btn.click(
